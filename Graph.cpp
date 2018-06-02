@@ -53,7 +53,7 @@ bool Graph::loadGraph(std::string filename)
 	std::ifstream file;
 	file.open(filename, std::ios::in | std::ios::binary);
 
-	//Sprawdzamy, czy zadany plik istnieje
+	//Check if file with given filename exists
 	if (!file.good())
 		return false;
 
@@ -96,22 +96,23 @@ bool Graph::loadGraph(std::string filename)
 	while (!file.eof())
 	{
 		std::getline(file, currLine);
-		std::size_t pos = (currLine.find(weightPrefix)) + 2;
+		std::size_t pos = (currLine.find(weightPrefix)) + weightPrefix.size();
 		std::cout << currLine << "\t\t" << std::endl;
 
 		if (std::regex_match(currLine, edgeRegex))
 		{
 			edge = extractIntegers(currLine);
 
-			int fromVertice = edge[0] - (isFirstVerticeIndexZero? 0 : 1),
-				toVertice = edge[1] - (isFirstVerticeIndexZero? 0 : 1),
+			int fromVertice = edge[0] - (isFirstVerticeIndexZero ? 0 : 1),
+				toVertice = edge[1] - (isFirstVerticeIndexZero ? 0 : 1),
 				&weight = edge[2];
 
 			auto verticeIsIncorrect = [this](int &vertice) -> bool {
 				return (vertice < 0 || vertice >= numOfVertices + !isFirstVerticeIndexZero);
 			};
 
-			if (verticeIsIncorrect(fromVertice) || verticeIsIncorrect(toVertice)) throw std::out_of_range("Out of range in adjacency matrix");
+			if (verticeIsIncorrect(fromVertice) || verticeIsIncorrect(toVertice))
+				throw std::out_of_range("Out of range in adjacency matrix");
 			else
 			{
 				adj_matrix[fromVertice][toVertice] = weight;
@@ -142,5 +143,7 @@ void Graph::showEdges()
 				std::cout << "(" << i + (isFirstVerticeIndexZero ? 0 : 1) << "," << j + (isFirstVerticeIndexZero ? 0 : 1) << ")\t";
 	std::cout << std::endl;
 }
+
+
 
 #endif

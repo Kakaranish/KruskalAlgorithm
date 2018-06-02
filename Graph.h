@@ -9,7 +9,8 @@
 #include <limits>
 
 #include "Utility.h"
-#include "LinkedList.h"
+#include "Data structures/LinkedList.h"
+#include "Data structures/Pair.h"
 
 class Graph
 {

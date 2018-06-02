@@ -6,7 +6,7 @@
 #include <cstdio>
 #include <string>
 
-#include "LinkedList.h"
+#include "Data structures/LinkedList.h"
 
 LinkedList<int> extractIntegers(std::string str);
 
