@@ -17,7 +17,7 @@ class Graph
   private:
 	//Flags
 	bool isDirected = true;
-	bool firstVertIsZero = true;
+	bool firstVerticeIndexIsZero = true;
 	std::size_t numOfVertices = 0;
 	bool **adj_matrix = nullptr;
 
@@ -32,9 +32,9 @@ class Graph
 	~Graph();
 
 	//UTILITY FUNCTIONS
-	inline void setFirstVerticeZero(bool value)
+	inline void setFirstVerticeIndexIsZero(bool value)
 	{
-		firstVertIsZero = value;
+		firstVerticeIndexIsZero = value;
 	}
 	bool loadGraph(std::string filename);
 	void showAdjMatrix();

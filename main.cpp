@@ -3,9 +3,10 @@
 #include <regex>
 
 #include "Graph.h"
-void FindMinimumSpanningTree()
+void FindMinimumSpanningTree(std::string filename, bool graphIsDirected = true, bool firstVerticeIndexIsZero = true)
 {
-    //Load from file
+    Graph graph(graphIsDirected);
+    graph.setFirstVerticeIndexIsZero(firstVerticeIndexIsZero);
 
     int *NumberOfTreeVerticeWithIndexBelongsTo = new int[10]; //size todo
 }
@@ -14,7 +15,7 @@ int main(int argc, char *argv[])
 {
 
     Graph graph(false);               //undirected graph
-    graph.setFirstVerticeZero(false); //in file first vertice has index 1
+    graph.setFirstVerticeIndexIsZero(false); //in file first vertice has index 1
     
     if (!graph.loadGraph("Res/z_zadania.txt"))
         std::cout << "Unable to load graph from given file." << std::endl;

@@ -100,15 +100,15 @@ bool Graph::loadGraph(std::string filename)
 		if (std::regex_match(currLine, pairRegex))
 		{
 			edge = extractIntegers(currLine);
-			if (edge[0] < 0 || edge[0] >= numOfVertices + !firstVertIsZero || edge[1] < 0 || edge[1] >= numOfVertices + !firstVertIsZero)
+			if (edge[0] < 0 || edge[0] >= numOfVertices + !firstVerticeIndexIsZero || edge[1] < 0 || edge[1] >= numOfVertices + !firstVerticeIndexIsZero)
 				throw std::out_of_range("Out of range in adjacency matrix");
 			else
 			{
-				adj_matrix[firstVertIsZero ? edge[0] : edge[0] - 1][firstVertIsZero ? edge[1] : edge[1] - 1] = true;
+				adj_matrix[firstVerticeIndexIsZero ? edge[0] : edge[0] - 1][firstVerticeIndexIsZero ? edge[1] : edge[1] - 1] = true;
 
 				//If graph is undirected
 				if (!isDirected)
-					adj_matrix[firstVertIsZero ? edge[1] : edge[1] - 1][firstVertIsZero ? edge[0] : edge[0] - 1] = true;
+					adj_matrix[firstVerticeIndexIsZero ? edge[1] : edge[1] - 1][firstVerticeIndexIsZero ? edge[0] : edge[0] - 1] = true;
 			}
 		}
 	}
