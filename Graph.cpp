@@ -120,7 +120,7 @@ void Graph::showAdjMatrix()
 	for (int i = 0; i < numOfVertices; i++)
 	{
 		for (int j = 0; j < numOfVertices; j++)
-			std::cout << adj_matrix[i][j] << "\t";
+			std::cout << adj_matrix[i][j] + (firstVerticeIndexIsZero? 0 : 1) << "\t";
 		std::cout << std::endl;
 	}
 }
@@ -129,7 +129,7 @@ void Graph::showEdges()
 	for (int i = 0; i < numOfVertices; i++)
 		for (int j = 0; j < numOfVertices; j++)
 			if (adj_matrix[i][j])
-				std::cout << "(" << i << "," << j << ")\t";
+				std::cout << "(" << i + (firstVerticeIndexIsZero? 0 : 1)<< "," << j + (firstVerticeIndexIsZero? 0 : 1) << ")\t";
 	std::cout << std::endl;
 }
 

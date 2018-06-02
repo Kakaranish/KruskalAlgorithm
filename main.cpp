@@ -8,7 +8,14 @@ void FindMinimumSpanningTree(std::string filename, bool graphIsDirected = true, 
     Graph graph(graphIsDirected);
     graph.setFirstVerticeIndexIsZero(firstVerticeIndexIsZero);
 
-    int *NumberOfTreeVerticeWithIndexBelongsTo = new int[10]; //size todo
+    if(!graph.loadGraph(filename))
+    {
+        std::cout << "Unable to load graph from given file." << std::endl;
+        return;
+    }
+    const std::size_t& numOfVertices = graph.getNumOfVertices();
+
+    unsigned* numOfTreeVerticeBelongsTo = new unsigned[numOfVertices];
 }
 
 int main(int argc, char *argv[])
@@ -21,6 +28,7 @@ int main(int argc, char *argv[])
         std::cout << "Unable to load graph from given file." << std::endl;
 
     graph.showEdges();
+    std::cout << graph.getNumOfVertices() << std::endl;
 
     return 0;
 }

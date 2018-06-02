@@ -32,10 +32,9 @@ class Graph
 	~Graph();
 
 	//UTILITY FUNCTIONS
-	inline void setFirstVerticeIndexIsZero(bool value)
-	{
-		firstVerticeIndexIsZero = value;
-	}
+	inline void setFirstVerticeIndexIsZero(bool value) { firstVerticeIndexIsZero = value; }
+	inline const std::size_t &getNumOfVertices() { return numOfVertices; }
+
 	bool loadGraph(std::string filename);
 	void showAdjMatrix();
 	void showEdges();
