@@ -10,7 +10,7 @@ LinkedList<int> extractIntegers(std::string str)
 
 	while (currOff < str.size())
 	{
-		if (std::isdigit(str.at(currOff)))
+		if (std::isdigit(str.at(currOff)) || str.at(currOff) == '-')
 		{
 			int num = std::stoi(str.substr(currOff));
 			result.push_back(num);

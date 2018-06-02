@@ -10,7 +10,7 @@ void Graph::clearAdjMatrix()
 {
 	for (int i = 0; i < numOfVertices; i++)
 		for (int j = 0; j < numOfVertices; j++)
-			adj_matrix[i][j] = false;
+			adj_matrix[i][j] = std::numeric_limits<int>::max();
 }
 void Graph::dealocateAdjMatrix()
 {
@@ -31,9 +31,9 @@ Graph::Graph(bool _isDirected = true) : isDirected(_isDirected) {}
 Graph::Graph(std::size_t _numOfVertices, bool _isDirected = true) : isDirected(_isDirected),
 																	numOfVertices(_numOfVertices)
 {
-	adj_matrix = new bool *[numOfVertices];
+	adj_matrix = new int *[numOfVertices];
 	for (int i = 0; i < numOfVertices; i++)
-		adj_matrix[i] = new bool[numOfVertices];
+		adj_matrix[i] = new int[numOfVertices];
 
 	clearAdjMatrix();
 }
@@ -79,9 +79,9 @@ bool Graph::loadGraph(std::string filename)
 			dealocateAdjMatrix();
 		else
 		{
-			adj_matrix = new bool *[numOfVertices];
+			adj_matrix = new int *[numOfVertices];
 			for (int i = 0; i < numOfVertices; i++)
-				adj_matrix[i] = new bool[numOfVertices];
+				adj_matrix[i] = new int[numOfVertices];
 
 			clearAdjMatrix(); //Setting all fields in array to false
 		}
@@ -90,25 +90,35 @@ bool Graph::loadGraph(std::string filename)
 	LinkedList<int> edge;
 
 	//On linux we have to remember about carriage return at the end of read line and add \r to the regex
-	std::regex pairRegex("\\([0-9]+,[0-9]+\\)\r?");
-
+	std::regex edgeRegex("\\([0-9]+,[0-9]+\\),\\-?[0-9]+\r?"); //? - one or no occurence
+	std::string weightPrefix("),");
 	//Adding next edges of the graph to adjacency matrix
 	while (!file.eof())
 	{
 		std::getline(file, currLine);
+		std::size_t pos = (currLine.find(weightPrefix)) + 2;
+		std::cout << currLine << "\t\t" << std::endl;
 
-		if (std::regex_match(currLine, pairRegex))
+		if (std::regex_match(currLine, edgeRegex))
 		{
 			edge = extractIntegers(currLine);
-			if (edge[0] < 0 || edge[0] >= numOfVertices + !firstVerticeIndexIsZero || edge[1] < 0 || edge[1] >= numOfVertices + !firstVerticeIndexIsZero)
-				throw std::out_of_range("Out of range in adjacency matrix");
+
+			int fromVertice = edge[0] - (isFirstVerticeIndexZero? 0 : 1),
+				toVertice = edge[1] - (isFirstVerticeIndexZero? 0 : 1),
+				&weight = edge[2];
+
+			auto verticeIsIncorrect = [this](int &vertice) -> bool {
+				return (vertice < 0 || vertice >= numOfVertices + !isFirstVerticeIndexZero);
+			};
+
+			if (verticeIsIncorrect(fromVertice) || verticeIsIncorrect(toVertice)) throw std::out_of_range("Out of range in adjacency matrix");
 			else
 			{
-				adj_matrix[firstVerticeIndexIsZero ? edge[0] : edge[0] - 1][firstVerticeIndexIsZero ? edge[1] : edge[1] - 1] = true;
+				adj_matrix[fromVertice][toVertice] = weight;
 
-				//If graph is undirected
+				//If graph is undirected we add symmetric edge to adjacency matrix
 				if (!isDirected)
-					adj_matrix[firstVerticeIndexIsZero ? edge[1] : edge[1] - 1][firstVerticeIndexIsZero ? edge[0] : edge[0] - 1] = true;
+					adj_matrix[toVertice][fromVertice] = weight;
 			}
 		}
 	}
@@ -120,7 +130,7 @@ void Graph::showAdjMatrix()
 	for (int i = 0; i < numOfVertices; i++)
 	{
 		for (int j = 0; j < numOfVertices; j++)
-			std::cout << adj_matrix[i][j] + (firstVerticeIndexIsZero? 0 : 1) << "\t";
+			std::cout << adj_matrix[i][j] + (isFirstVerticeIndexZero ? 0 : 1) << "\t";
 		std::cout << std::endl;
 	}
 }
@@ -128,8 +138,8 @@ void Graph::showEdges()
 {
 	for (int i = 0; i < numOfVertices; i++)
 		for (int j = 0; j < numOfVertices; j++)
-			if (adj_matrix[i][j])
-				std::cout << "(" << i + (firstVerticeIndexIsZero? 0 : 1)<< "," << j + (firstVerticeIndexIsZero? 0 : 1) << ")\t";
+			if (adj_matrix[i][j] != infinity)
+				std::cout << "(" << i + (isFirstVerticeIndexZero ? 0 : 1) << "," << j + (isFirstVerticeIndexZero ? 0 : 1) << ")\t";
 	std::cout << std::endl;
 }
 
