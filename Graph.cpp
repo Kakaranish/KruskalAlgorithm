@@ -19,6 +19,7 @@ void Graph::dealocateAdjMatrix()
 	delete[] adj_matrix;
 
 	numOfVertices = 0;
+	numOfEdges = 0;
 	adj_matrix = nullptr;
 }
 
@@ -96,8 +97,6 @@ bool Graph::loadGraph(std::string filename)
 	while (!file.eof())
 	{
 		std::getline(file, currLine);
-		std::size_t pos = (currLine.find(weightPrefix)) + weightPrefix.size();
-		std::cout << currLine << "\t\t" << std::endl;
 
 		if (std::regex_match(currLine, edgeRegex))
 		{
@@ -106,6 +105,17 @@ bool Graph::loadGraph(std::string filename)
 			int fromVertice = edge[0] - (isFirstVerticeIndexZero ? 0 : 1),
 				toVertice = edge[1] - (isFirstVerticeIndexZero ? 0 : 1),
 				&weight = edge[2];
+
+			//Increasing num of edges
+			if (fromVertice == toVertice)
+				++numOfEdges;
+			else
+			{
+				if (!isDirected)
+					numOfEdges += 2;
+				else
+					++numOfEdges;
+			}
 
 			auto verticeIsIncorrect = [this](int &vertice) -> bool {
 				return (vertice < 0 || vertice >= numOfVertices + !isFirstVerticeIndexZero);
@@ -144,6 +154,15 @@ void Graph::showEdges()
 	std::cout << std::endl;
 }
 
-
+PriorityQueueMaxHeap<Pair<unsigned, unsigned>, int> Graph::getSortedEdgesInPriorityQueue()
+{
+	PriorityQueueMaxHeap<Pair<unsigned, unsigned>, int> edges(numOfEdges, false);
+	for (int i = 0; i < numOfVertices; i++)
+		for (int j = 0; j < numOfVertices; j++)
+			if (adj_matrix[i][j] != Graph::infinity)
+				if (!isDirected && j <= i)
+					edges.push(Pair<unsigned, unsigned>(i, j), adj_matrix[i][j]);
+	return edges;
+}
 
 #endif

@@ -32,7 +32,7 @@ class LinkedList
 
   public:
     inline bool isEmpty() const { return !head ? true : false; }
-
+    inline std::size_t getSize() const {return size;}
     LinkedList() = default;
 
     //Copy constructor and implicit assign operator
@@ -197,7 +197,7 @@ class LinkedList
         head = tail = nullptr;
     }
 
-    void show()
+    void show(bool newLineAfterResult = false)
     {
         if (isEmpty())
         {
@@ -210,7 +210,7 @@ class LinkedList
 
         while (tempNode)
         {
-            std::cout << tempNode->value << "\t";
+            std::cout << tempNode->value << (newLineAfterResult? "\n" : "\t");
             tempNode = tempNode->nextNode;
         }
 

@@ -6,12 +6,12 @@ template <typename TValue, typename TPriority = int>
 class PriorityQueueMaxHeap
 {
   public:
-	template <typename _TValue, typename _TPriority>
+	template <typename _TValue = TValue, typename _TPriority = TPriority>
 	struct Node
 	{
 		_TValue value;
 		_TPriority priority;
-		Node() = default;
+		Node() {}
 		Node(_TValue _value, _TPriority _priority) : value(_value), priority(_priority) {}
 	};
 
@@ -22,13 +22,14 @@ class PriorityQueueMaxHeap
 	bool highPriorityFirst = true;
 
 	std::size_t size = 0;
-	std::size_t max_size = 0;
+	std::size_t maxSize = 0;
+
 	//METHODS
 	void heapify_up()
 	{
 		std::size_t currParentIndex, currentIndex = size;
 
-		while ((currParentIndex = (currentIndex - 1) / 2) <= max_size)
+		while ((currParentIndex = (currentIndex - 1) / 2) <= maxSize)
 		{
 			if (highPriorityFirst)
 			{
@@ -106,25 +107,61 @@ class PriorityQueueMaxHeap
 		}
 	}
 
+	void allocateArr()
+	{
+		if (maxSize > 0)
+			arr = new NodeType[maxSize];
+	}
+
   public:
-	inline std::size_t getMaxSize() const { return max_size; }
+	inline std::size_t getMaxSize() const { return maxSize; }
 	inline bool isEmpty() const { return (size > 0) ? false : true; }
 
-	PriorityQueueMaxHeap(unsigned _max_size = 0, bool _highPriorityFirst = true) : max_size(_max_size),
-																				   highPriorityFirst(_highPriorityFirst)
+	//Implicit copy constructor
+	PriorityQueueMaxHeap(const PriorityQueueMaxHeap<TValue, TPriority> &other)
 	{
-		if (_max_size)
-			arr = new NodeType[max_size];
+		if (this->maxSize != other.maxSize)
+		{
+			clear();
+			maxSize = other.maxSize;
+
+			allocateArr();
+		}
+		size = other.size;
+		for (int i = 0; i < size; i++)
+			arr[i] = other.arr[i];
+	}
+
+	PriorityQueueMaxHeap (PriorityQueueMaxHeap<TValue, TPriority> &&other)
+	{
+		if (this->maxSize != other.maxSize)
+		{
+			clear();
+			maxSize = std::move(other.maxSize);
+
+			allocateArr();
+		}
+
+		size = std::move(other.size);
+		for (int i = 0; i < size; i++)
+			arr[i] = std::move(other.arr[i]);
+	}
+
+	PriorityQueueMaxHeap(unsigned _maxSize = 0, bool _highPriorityFirst = true) : maxSize(_maxSize),
+																				  highPriorityFirst(_highPriorityFirst)
+	{
+		allocateArr();
 	}
 
 	void push(TValue value, TPriority priority)
 	{
-		if (size >= max_size)
+		if (size >= maxSize)
 			throw std::out_of_range("Heap overflow! Reached max size!");
 		arr[size] = NodeType(value, priority);
 		heapify_up();
 		++size;
 	}
+
 	NodeType pop()
 	{
 		if (isEmpty())
@@ -147,6 +184,16 @@ class PriorityQueueMaxHeap
 		std::cout << "Priority\tValue" << std::endl;
 		for (int i = 0; i < size; i++)
 			std::cout << arr[i].priority << "\t" << arr[i].value << std::endl;
+	}
+
+	void clear()
+	{
+		if (isEmpty() && maxSize)
+			return;
+
+		size = 0;
+		maxSize = 0;
+		delete[] arr;
 	}
 };
 

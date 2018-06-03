@@ -11,6 +11,7 @@
 #include "Utility.h"
 #include "Data structures/LinkedList.h"
 #include "Data structures/Pair.h"
+#include "Data structures/PriorityQueueMaxHeap.h"
 
 class Graph
 {
@@ -18,7 +19,9 @@ class Graph
 	//Flags
 	bool isDirected = true;
 	bool isFirstVerticeIndexZero = true;
+	
 	std::size_t numOfVertices = 0;
+	std::size_t numOfEdges = 0;
 	int **adj_matrix = nullptr;
 
 	void clearAdjMatrix();
@@ -41,6 +44,9 @@ class Graph
 	bool loadGraph(std::string filename);
 	void showAdjMatrix();
 	void showEdges();
+
+	PriorityQueueMaxHeap<Pair<unsigned, unsigned>, int> getSortedEdgesInPriorityQueue();
+
 };
 
 #endif
