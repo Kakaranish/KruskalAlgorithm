@@ -5,13 +5,13 @@
 #include "Graph.h"
 #include "Data structures/PriorityQueueMaxHeap.h"
 
-#include <ctime>
 void FindMinimumSpanningTree(std::string filename, bool graphIsDirected = true, bool isFirstVerticeIndexZero = true)
 {
-    //Loading graph from file
+    //Graph initialization
     Graph graph(graphIsDirected);
     graph.setIsFirstVerticeIndexZero(isFirstVerticeIndexZero);
 
+    //Loading graph from file
     if (!graph.loadGraph(filename))
     {
         std::cout << "Unable to load graph from given file." << std::endl;
@@ -31,14 +31,13 @@ void FindMinimumSpanningTree(std::string filename, bool graphIsDirected = true, 
         indexOfTreeVerticeBelongsTo[i] = i;
         sizeOfTree[i] = 1;
     }
-    /*
-                                        TODO:std::move here 
-    */
+
     //Creating set of sorted egdes we can find in graph
     auto sortedEdges = graph.getSortedEdgesInPriorityQueue();
 
     LinkedList<Pair<unsigned, unsigned>> result;
 
+    //If this var is equal to numOfVertices that means we got spanning tree
     int biggestTreeSize = 1;
     while (!sortedEdges.isEmpty() && biggestTreeSize != numOfVertices)
     {
@@ -48,31 +47,24 @@ void FindMinimumSpanningTree(std::string filename, bool graphIsDirected = true, 
                  toVertice = lowestEdge.value.second;
         int weight = lowestEdge.priority;
 
+        //Getting indexes of trees our vertices belong to
         int fromVerticeBelongsTo = indexOfTreeVerticeBelongsTo[fromVertice];
         int toVerticeBelongsTo = indexOfTreeVerticeBelongsTo[toVertice];
 
-        //State at the beginning
-        // std::cout << "(" << fromVertice << "," << toVertice << ")" << std::endl;
-        // std::cout << "v[" << fromVertice << "] belongs to tree " << indexOfTreeVerticeBelongsTo[fromVertice] << std::endl;
-        // std::cout << "v[" << toVertice << "] belongs to tree " << indexOfTreeVerticeBelongsTo[toVertice] << std::endl;
-        // std::cout << "sizeOfTree[" << fromVerticeBelongsTo << "] = " << sizeOfTree[fromVerticeBelongsTo] << std::endl;
-        // std::cout << "sizeOfTree[" << toVerticeBelongsTo << "] = " << sizeOfTree[toVerticeBelongsTo] << std::endl
-        //           << std::endl;
-
-        //Both vertices creating edge belongs to the same tree
+        //Both vertices creating edge belongs to the same tree - we can ommit them
         if (fromVerticeBelongsTo == toVerticeBelongsTo)
             continue;
 
+        //Helper variables
         int indexOfBiggerTree = (sizeOfTree[fromVerticeBelongsTo] > sizeOfTree[toVerticeBelongsTo]) ? fromVerticeBelongsTo : toVerticeBelongsTo;
         int indexOfLowerTree = (indexOfBiggerTree == fromVerticeBelongsTo) ? toVerticeBelongsTo : fromVerticeBelongsTo;
 
+        //Transfer all vertices from lower tree to the bigger one
         for (int i = 0; i < numOfVertices; i++)
-        {
-            //Transfer all vertices from lower tree to the bigger one
             if (indexOfTreeVerticeBelongsTo[i] == indexOfLowerTree)
                 indexOfTreeVerticeBelongsTo[i] = indexOfBiggerTree;
-        }
 
+        //After transfer we change size of both trees
         sizeOfTree[indexOfBiggerTree] += sizeOfTree[indexOfLowerTree];
         sizeOfTree[indexOfLowerTree] = 0;
 
@@ -82,13 +74,12 @@ void FindMinimumSpanningTree(std::string filename, bool graphIsDirected = true, 
         result.push_back(Pair<unsigned, unsigned>(fromVertice, toVertice));
     }
 
-    //Showing received spanning tree 
+    //Showing received spanning tree
     result.show(true);
 }
 
 int main(int argc, char *argv[])
 {
-
     FindMinimumSpanningTree("Res/test.txt", false, true);
 
     return 0;

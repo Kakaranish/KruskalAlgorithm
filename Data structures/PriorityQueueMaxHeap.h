@@ -9,14 +9,17 @@ class PriorityQueueMaxHeap
 	template <typename _TValue = TValue, typename _TPriority = TPriority>
 	struct Node
 	{
+		//Fields
 		_TValue value;
 		_TPriority priority;
+
+		//Constructor & destructor section
 		Node() {}
 		Node(_TValue _value, _TPriority _priority) : value(_value), priority(_priority) {}
 	};
 
   private:
-	//FIELDS
+	//Fields
 	using NodeType = Node<TValue, TPriority>;
 	NodeType *arr;
 	bool highPriorityFirst = true;
@@ -24,7 +27,7 @@ class PriorityQueueMaxHeap
 	std::size_t size = 0;
 	std::size_t maxSize = 0;
 
-	//METHODS
+	//Methods
 	void heapify_up()
 	{
 		std::size_t currParentIndex, currentIndex = size;
@@ -106,7 +109,6 @@ class PriorityQueueMaxHeap
 			currParentIndex = biggerChild_index;
 		}
 	}
-
 	void allocateArr()
 	{
 		if (maxSize > 0)
@@ -114,10 +116,11 @@ class PriorityQueueMaxHeap
 	}
 
   public:
+	//Inline functions
 	inline std::size_t getMaxSize() const { return maxSize; }
 	inline bool isEmpty() const { return (size > 0) ? false : true; }
 
-	//Implicit copy constructor
+	//Copy constructor
 	PriorityQueueMaxHeap(const PriorityQueueMaxHeap<TValue, TPriority> &other)
 	{
 		if (this->maxSize != other.maxSize)
@@ -130,21 +133,6 @@ class PriorityQueueMaxHeap
 		size = other.size;
 		for (int i = 0; i < size; i++)
 			arr[i] = other.arr[i];
-	}
-
-	PriorityQueueMaxHeap (PriorityQueueMaxHeap<TValue, TPriority> &&other)
-	{
-		if (this->maxSize != other.maxSize)
-		{
-			clear();
-			maxSize = std::move(other.maxSize);
-
-			allocateArr();
-		}
-
-		size = std::move(other.size);
-		for (int i = 0; i < size; i++)
-			arr[i] = std::move(other.arr[i]);
 	}
 
 	PriorityQueueMaxHeap(unsigned _maxSize = 0, bool _highPriorityFirst = true) : maxSize(_maxSize),
@@ -161,7 +149,6 @@ class PriorityQueueMaxHeap
 		heapify_up();
 		++size;
 	}
-
 	NodeType pop()
 	{
 		if (isEmpty())

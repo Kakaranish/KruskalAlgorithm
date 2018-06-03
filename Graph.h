@@ -19,34 +19,35 @@ class Graph
 	//Flags
 	bool isDirected = true;
 	bool isFirstVerticeIndexZero = true;
-	
+
+	//Fields
 	std::size_t numOfVertices = 0;
 	std::size_t numOfEdges = 0;
 	int **adj_matrix = nullptr;
 
+	//Methods
 	void clearAdjMatrix();
 	void dealocateAdjMatrix();
 
   public:
-
 	static const int infinity = std::numeric_limits<int>::max();
 
-	//CONSTRUCTORS AND DESTRUCTOR
+	//Inline methods
+	inline void setIsFirstVerticeIndexZero(bool value) { isFirstVerticeIndexZero = value; }
+	inline const std::size_t &getNumOfVertices() { return numOfVertices; }
+
+	//Constructor & destructor section
 	Graph() = default;
 	Graph(bool _isDirected);
 	Graph(std::size_t _numOfVertices, bool _isDirected);
 	~Graph();
 
-	//UTILITY FUNCTIONS
-	inline void setIsFirstVerticeIndexZero(bool value) { isFirstVerticeIndexZero = value; }
-	inline const std::size_t &getNumOfVertices() { return numOfVertices; }
-
+	//Utility methods
 	bool loadGraph(std::string filename);
 	void showAdjMatrix();
 	void showEdges();
 
 	PriorityQueueMaxHeap<Pair<unsigned, unsigned>, int> getSortedEdgesInPriorityQueue();
-
 };
 
 #endif

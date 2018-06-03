@@ -27,7 +27,7 @@ void Graph::dealocateAdjMatrix()
 	PUBLIC METHODS
 */
 
-//CONSTRUCTORS AND DESTRUCTOR
+//Constructor & destructor section
 Graph::Graph(bool _isDirected = true) : isDirected(_isDirected) {}
 Graph::Graph(std::size_t _numOfVertices, bool _isDirected = true) : isDirected(_isDirected),
 																	numOfVertices(_numOfVertices)
@@ -48,7 +48,7 @@ Graph::~Graph()
 	delete[] adj_matrix;
 }
 
-//UTILITY FUNCTIONS
+//Utility methods
 bool Graph::loadGraph(std::string filename)
 {
 	std::ifstream file;

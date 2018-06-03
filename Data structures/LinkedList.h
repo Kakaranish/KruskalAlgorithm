@@ -24,15 +24,27 @@ class LinkedList
     Node<T> *tail = nullptr;
     unsigned size = 0;
 
-    void checkLinkedListIsEmptyAndThrowException()
+    void clear()
     {
-        if (!head)
-            throw std::runtime_error("Linked list is empty.");
+        if (isEmpty())
+            return;
+
+        Node<T> *tempNode = head;
+
+        while (tempNode)
+        {
+            tempNode = tempNode->nextNode;
+            delete head;
+            head = tempNode;
+        }
+
+        size = 0;
+        head = tail = nullptr;
     }
 
   public:
     inline bool isEmpty() const { return !head ? true : false; }
-    inline std::size_t getSize() const {return size;}
+    inline std::size_t getSize() const { return size; }
     LinkedList() = default;
 
     //Copy constructor and implicit assign operator
@@ -138,7 +150,6 @@ class LinkedList
 
         ++size;
     }
-
     void remove(T _value)
     {
         if (isEmpty())
@@ -179,24 +190,6 @@ class LinkedList
         }
     }
 
-    void clear()
-    {
-        if (isEmpty())
-            return;
-
-        Node<T> *tempNode = head;
-
-        while (tempNode)
-        {
-            tempNode = tempNode->nextNode;
-            delete head;
-            head = tempNode;
-        }
-
-        size = 0;
-        head = tail = nullptr;
-    }
-
     void show(bool newLineAfterResult = false)
     {
         if (isEmpty())
@@ -210,7 +203,7 @@ class LinkedList
 
         while (tempNode)
         {
-            std::cout << tempNode->value << (newLineAfterResult? "\n" : "\t");
+            std::cout << tempNode->value << (newLineAfterResult ? "\n" : "\t");
             tempNode = tempNode->nextNode;
         }
 
